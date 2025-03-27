@@ -85,5 +85,10 @@ This is the place for you to write reflections:
 ### Mandatory (Subscriber) Reflections
 
 #### Reflection Subscriber-1
+1. In this tutorial, we used RwLock<> to synchronise the use of Vec of Notifications. Explain why it is necessary for this case, and explain why we do not use Mutex<> instead? <br>
+   `RwLock<>` digunakan untuk mensinkronisasi akses karena `RwLock<>` membolehkan lebih dari 1 *thread* untuk mengakses data secara paralel jika hanya untuk melakukan *read*/pembacaan data. `RwLock<>` hanya akan membatasi akses *thread* jika ada 1 thread yang membutuhkan akses untuk melakukan *write*/modifikasi data. Pada sinkronisasi data notifikasi, akses data hanya digunakan untuk melakukan pembacaan data notifikasi sehingga tidak akan terjadi blocking karena ada suatu *thread* yang ingin melakukan *write*. Tidak digunakan `Mutex<>` karena tidak seperti `RwLock<>`, `Mutex<>` tidak membedakan akses data *read* dan *write*, akibatnya jika *thread* ingin melakukan *read* akan tetap dilakukan blocking. Sehingga jika terdapat banyak *thread*, akan terjadi banyak blocking dimana jika digunakan `RwLock<>` semua thread dapat mengakses data secara paralel  dengan asumsi semuanya melakukan *read*.
+
+2. In this tutorial, we used lazy_static external library to define Vec and DashMap as a "static" variable. Compared to Java where we can mutate the content of a static variable via a static function, why did not Rust allow us to do so? <br>
+   Pada Java, variabel *static* dapat dimodifikasi langsung dengan *static method*, tetapi hal ini dapat menyebabkan *race condition* yang menyebabkan inkonsistensi data jika ada beberapa *thread* yang mengakses dan memodifikasi variabel *static* tersebut. Sementara, Rust mencegah modifikasi langsung pada variabel *static* untuk menghindari *race condition*. Jika ingin melakukan modifikasi langsung pada variabel, maka diperlukan penggunaan mekanisme yang *thread-safe*, contohnya `lazy_static`. Dengan penggunaan `lazy_static`, insialisasi hanya akan terjadi sekali, yaitu saat program mengaksesnya untuk pertama kali.
 
 #### Reflection Subscriber-2
